@@ -1,0 +1,85 @@
+#!/bin/sh
+#Tomaz 22.7.12, v1.0
+#
+echo "\n\nRaspberry related settings:\n"
+echo "Coping /boot/arm128_start.elf to /boot/start.elf"
+sudo cp /boot/arm128_start.elf /boot/start.elf
+echo "Setting config.txt: disable_overscan=1"
+#set "disable_overscan=1" as described here: http://www.raspbian.org/RaspbianXBMC
+#this part of code is from: https://github.com/asb/raspi-config/blob/master/raspi-config
+set_config_var() {
+  lua - "$1" "$2" "$3" <<EOF > "$3.bak"
+local key=assert(arg[1])
+local value=assert(arg[2])
+local fn=assert(arg[3])
+local file=assert(io.open(fn))
+local made_change=false
+for line in file:lines() do
+  if line:match("^#?%s*"..key.."=.*$") then
+    line=key.."="..value
+    made_change=true
+  end
+  print(line)
+end
+
+if not made_change then
+  print(key.."="..value)
+end
+EOF
+mv "$3.bak" "$3"
+}
+
+# $1 is 0 to disable overscan, 1 to disable it
+set_overscan() {
+  # Stop if /boot is not a mountpoint
+  if ! mountpoint -q /boot; then
+    return 1
+  fi
+
+  [ -e /boot/config.txt ] || touch /boot/config.txt
+
+  if [ "$1" -eq 0 ]; then # disable overscan
+    sed /boot/config.txt -i -e "s/^overscan_/#overscan_/"
+    set_config_var disable_overscan 1 /boot/config.txt
+  else # enable overscan
+    set_config_var disable_overscan 0 /boot/config.txt
+  fi
+}
+
+#set "disable_overscan=1"
+set_overscan 0
+
+#Automatically start XBMC ?
+whiptail --yesno "\nWould you like to boot directly to XBMC?\n\nWhen booting you will have 5 seconds\nto press any key to cancel start of XBMC." 13 50 2
+if [ $? -eq 0 ]; then # yes
+   echo "Setting autostart XBMC..."
+   #first we have to disable autostart X
+   update-rc.d lightdm disable 2
+   #finish unfinished raspi-config and set autologin
+   sed -i /etc/inittab \
+      -e "s/.*1:2345:respawn:\/sbin\/getty\s*--noclear.*/1:2345:respawn:\/bin\/login -f pi tty1 \<\/dev\/tty1 \>\/dev\/tty1 2\>\&1 # XBMC_AUTOSTART\n#1:2345:respawn:\/sbin\/getty --noclear 38400 tty1 # XBMC_NORMALLOGIN/" \
+      -e "/#\s*RPICFG_TO_DISABLE/d"
+   telinit q
+   #autostart of XBMC in .bashrc
+   cat /home/pi/.bashrc|grep XBMC >/dev/null 2>&1
+   if [ $? -eq 1 ]; then # didn't find XBMC, so wi will add, otherwise not - not very necessery, but when I was testing I had many XBMC starting points!
+      echo >> /home/pi/.bashrc 
+      echo "case \"\`tty\`\" in # XBMC - start only for tty1" >> /home/pi/.bashrc
+      echo "     *tty1) xbmc-ask;; # XBMC - start XBMC" >> /home/pi/.bashrc
+      echo "esac # XBMC - end of case" >> /home/pi/.bashrc
+   fi
+fi
+
+#Every time you start XBMC, try to mount USB/HDD:
+#/dev/sda1 to /mnt/xbmc1 and /dev/sdb1 to /mnt/xbmc2 ?
+whiptail --yesno "\nWould you like to try to mount USB/HDD\nevery time you start XBMC?\n\nDivaces:\n/dev/sda1 mount to /mnt/xbmc1 and\n/dev/sdb1 mount to /mnt/xbmc2 ?\n" 13 50 2
+if [ $? -eq 0 ]; then # yes
+   echo "Setting mounting USB/HDD for XBMC..."
+   touch /home/pi/.automountUSBforXBMC
+   touch /home/pi/.autoumountUSBforXBMC
+fi
+
+echo "\n\n\n\nIf you didn't use arm128_start.elf in your /boot, you should REBOOT before using XBMC!\n\n\n\n"
+
+
+exit 0

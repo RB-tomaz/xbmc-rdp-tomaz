@@ -1,0 +1,29 @@
+#!/bin/sh
+#idea of payneardo on http://www.raspberrypi.org/phpBB3/viewtopic.php?f=66&t=10304&start=125
+#idea of tomaz, try to mount sda1 and sdb1 devices
+ps=$PS1
+usb1="/dev/sda1"
+usb2="/dev/sdb1"
+if [ -e ~/.automountUSBforXBMC ]
+then
+ echo "Trying to mount /dev/sda1 and /dev/sdb1"
+  if  [ ! -d /mnt/xbmc1 ] ; then
+     sudo mkdir /mnt/xbmc1 >/dev/null 2>&1
+  fi
+  if  [ ! -d /mnt/xbmc2 ] ; then
+     sudo mkdir /mnt/xbmc2 >/dev/null 2>&1
+  fi
+ sudo mount /dev/sda1 /mnt/xbmc1 >/dev/null 2>&1
+ sudo mount /dev/sdb1 /mnt/xbmc2 >/dev/null 2>&1 
+fi
+export PS1=''
+setterm -cursor off
+clear ; /usr/lib/xbmc/xbmc.bin
+export PS1=$ps
+setterm -cursor on
+if [ -e ~/.autoumountUSBforXBMC ]
+then
+ echo "Trying to unmount /mnt/xbmc1(sda1) and /mnt/xmbc2(sdb1)"
+ sudo umount /mnt/xbmc1 >/dev/null 2>&1
+ sudo umount /mnt/xbmc2 >/dev/null 2>&1 
+fi

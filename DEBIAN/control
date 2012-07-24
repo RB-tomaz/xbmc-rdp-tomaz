@@ -1,0 +1,8 @@
+Package: xbmc-rdp-tomaz
+Version: 12.0-1
+Maintainer: 'Tomaz'
+Architecture: armhf
+Depends: libsmbclient (>=3.6.6), libmicrohttpd10 (>=0.9.20), libtinyxml2.6.2 (>=2.6.2), libyajl2 (>=2.0.4), libssh-4 (>=0.5.2), libmysqlclient18 (>=5.5.24), liblzo2-2 (>=2.06), libfribidi0 (>=0.19.2), libcdio13 (>=0.83), libcurl3-gnutls (>=7.26.0), sqlite3 (>=3.7.13), upower (>=0.9.17)
+Description: XBMC Media Center 12.0-ALPHA4 Git:20120715-2acdae7
+Compiled as described here(18.7.12): http://www.raspbian.org/RaspbianXBMC
+Postinst script set memory size, set autostart, and fix few known problems.

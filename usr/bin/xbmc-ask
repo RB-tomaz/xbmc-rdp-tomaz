@@ -1,0 +1,12 @@
+#!/bin/bash
+#Tomaz, 22.7.12
+clear
+echo -e "\n\n\n\n\n\nPress any key in the next five seconds,\nif you DON'T want XBMC to start!\n\n\n"
+read -t5 -n1 -r -p "..." key
+if [ $? -eq 0 ]; then
+    clear
+    echo -e "\n\n\nOK, XBMC will not be started.\n\nYou can start it with command \"xbmc\".\n\n"
+else
+    echo -e "\n\n Starting XBMC, please wait..."
+    xbmc
+fi

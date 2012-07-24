@@ -1,0 +1,42 @@
+#!/bin/sh
+#Tomaz 24.7.12, v1.0
+#
+echo "\n\nRemoving additional XBMC settings on your RaspberryPi\n"
+echo "Coping /boot/arm224_start.elf to /boot/start.elf\n\n\n\n"
+sudo cp /boot/arm224_start.elf /boot/start.elf
+
+#Automatically start in X?
+whiptail --yesno "Should we boot straight to X desktop?" 10 45 2
+RET=$?
+if [ $RET -eq 0 ]; then # yes
+  update-rc.d lightdm enable 2
+  sed /etc/lightdm/lightdm.conf -i -e "s/^#autologin-user=.*/autologin-user=pi/"
+elif [ $RET -eq 1 ]; then # no
+  update-rc.d lightdm disable 2
+else # user hit escape
+  update-rc.d lightdm disable 2
+fi
+#delete autologin
+echo "Deleting XBMC from /etc/inittabi..."
+sed -i /etc/inittab \
+      -e "s/.*1:2345:respawn:\/sbin\/getty\s*--noclear.*/1:2345:respawn:\/sbin\/getty --noclear 38400 tty1/" \
+      -e "/#\s*XBMC_AUTOSTART/d"
+telinit q
+echo "Deleting XBMC autostart in .bashrc..."
+#delete autostart of XBMC in .bashrc
+sed -i /home/pi/.bashrc \
+   -e "/#\s*XBMC/d"
+
+#delete automountUSB for XBMC
+echo "Deleting automount USB for XBMC"
+rm /home/pi/.automountUSBforXBMC >/dev/null 2>&1
+rm /home/pi/.autoumountUSBforXBMC >/dev/null 2>&1
+
+#delete .xbmc settings, if we left something there
+echo "Deleting .xbmc settings..."
+rm -r -f /home/pi/.xbmc/ >/dev/null 2>&1
+
+echo "\n\nSetting disable_overscan= in your config.txt was NOT changed.\nIf you need to change it use \"sodo rapsi-config\""
+echo "\n\n\n\nArm224_start.elf in your /boot will be used after you REBOOT.\n\n\n\n"
+
+exit 0
