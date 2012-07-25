@@ -79,7 +79,7 @@ if [ $? -eq 0 ]; then # yes
    touch /home/pi/.autoumountUSBforXBMC
 fi
 
-echo "\n\n\n\nIf you didn't use arm128_start.elf in your /boot, you should REBOOT before using XBMC!\n\n\n\n"
+echo "\n\n\n\nIf you didn't use arm128_start.elf in your /boot, you should REBOOT before using XBMC!\n\n\n\nHint: sudo reboot\n"
 
 
 exit 0
