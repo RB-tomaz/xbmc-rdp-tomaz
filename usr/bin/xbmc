@@ -16,11 +16,17 @@ then
  sudo mount /dev/sda1 /mnt/xbmc1 >/dev/null 2>&1
  sudo mount /dev/sdb1 /mnt/xbmc2 >/dev/null 2>&1 
 fi
+mode=`fbset|grep "mode "|sed -e "s/.*\"\(.*\)\"/\1/"`
 export PS1=''
 setterm -cursor off
 clear ; /usr/lib/xbmc/xbmc.bin
 export PS1=$ps
 setterm -cursor on
+xres=`echo $mode|sed -e "s/x.*//"`
+yres=`echo $mode|sed -e "s/.*x\([0-9]*\)-\?.*/\1/"`
+fbset -fb /dev/fb0 -xres $xres -yres $yres 
+sudo chvt 2
+sudo chvt 1
 if [ -e ~/.autoumountUSBforXBMC ]
 then
  echo "Trying to unmount /mnt/xbmc1(sda1) and /mnt/xmbc2(sdb1)"
