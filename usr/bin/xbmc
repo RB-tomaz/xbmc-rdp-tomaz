@@ -6,15 +6,15 @@ usb1="/dev/sda1"
 usb2="/dev/sdb1"
 if [ -e ~/.automountUSBforXBMC ]
 then
- echo "Trying to mount /dev/sda1 and /dev/sdb1"
+ echo "Trying to mount $usb1 and $usb2"
   if  [ ! -d /mnt/xbmc1 ] ; then
      sudo mkdir /mnt/xbmc1 >/dev/null 2>&1
   fi
   if  [ ! -d /mnt/xbmc2 ] ; then
      sudo mkdir /mnt/xbmc2 >/dev/null 2>&1
   fi
- sudo mount /dev/sda1 /mnt/xbmc1 >/dev/null 2>&1
- sudo mount /dev/sdb1 /mnt/xbmc2 >/dev/null 2>&1 
+ sudo mount $usb1 /mnt/xbmc1 >/dev/null 2>&1
+ sudo mount $usb2 /mnt/xbmc2 >/dev/null 2>&1 
 fi
 mode=`fbset|grep "mode "|sed -e "s/.*\"\(.*\)\"/\1/"`
 export PS1=''
@@ -29,7 +29,7 @@ sudo chvt 2
 sudo chvt 1
 if [ -e ~/.autoumountUSBforXBMC ]
 then
- echo "Trying to unmount /mnt/xbmc1(sda1) and /mnt/xmbc2(sdb1)"
+ echo "Trying to unmount /mnt/xbmc1($usb1) and /mnt/xmbc2($usb2)"
  sudo umount /mnt/xbmc1 >/dev/null 2>&1
  sudo umount /mnt/xbmc2 >/dev/null 2>&1 
 fi
