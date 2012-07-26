@@ -1,7 +1,7 @@
 #!/bin/sh
 #idea of payneardo on http://www.raspberrypi.org/phpBB3/viewtopic.php?f=66&t=10304&start=125
 #idea of tomaz, try to mount sda1 and sdb1 devices
-ps=$PS1
+#if you want to mount something else you can simply chang variable usb1 or usb2....
 usb1="/dev/sda1"
 usb2="/dev/sdb1"
 if [ -e ~/.automountUSBforXBMC ]
@@ -17,6 +17,7 @@ then
  sudo mount $usb2 /mnt/xbmc2 >/dev/null 2>&1 
 fi
 mode=`fbset|grep "mode "|sed -e "s/.*\"\(.*\)\"/\1/"`
+ps=$PS1
 export PS1=''
 setterm -cursor off
 clear ; /usr/lib/xbmc/xbmc.bin
