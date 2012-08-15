@@ -223,7 +223,7 @@ For your own "make": This I didn't test exactly as written. I'm writing this fro
 
     mkdir ~/xbmc-deb
     cd ~/xbmc-rbp
-    sudo make install [B]DESTDIR=/home/pi/xbmc-deb[/B]
+    sudo make install DESTDIR=/home/pi/xbmc-deb
     cd ~/xbmc-deb
     mkdir DEBIAN
     cd DEBIAN
