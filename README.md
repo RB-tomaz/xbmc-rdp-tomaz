@@ -54,7 +54,7 @@ Answer question about mounting /dev/sda1 and /dev/sdb1 USB/HDD disks when starti
 
 *I have to explain little more:
 
-- If you select Yes XBMC will try to mount /dev/sda1 to /mnt/xbmc1 and /dev/sdb1 to /mnt/sdb2
+- If you select Yes XBMC will try to mount /dev/sda1 to /mnt/xbmc1 and /dev/sdb1 to /mnt/xbmc2
 - If you select No XBMC will not try to mount
 
 5.) Reboot
